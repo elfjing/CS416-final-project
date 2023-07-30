@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<title>Ramen Ratings and Styles</title>
+<meta charset="UTF-8">
+
+<!-- Remy Sharp Shim --> 
+<!--[if lt IE 9]>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv.js"></script>
+<![endif]-->
+
+<link href="https://fonts.googleapis.com/css?family=Open+Sans:400,400i,700,700i&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css?family=Playfair+Display:400i,700&display=swap" rel="stylesheet">
+<link href="css/style.css" rel="stylesheet">
+
+<script src="https://d3js.org/d3.v5.min.js"></script> 
+<script src="https://d3js.org/d3-array.v2.min.js"></script>
+<style>
+    .bar {
+        fill: steelblue;
+    }
+</style>
+</head>
+
+<body class="home">
+<nav id="nav-main">
+<ul>
+<li>Ramen Ratings &amp; Styles</li>
+<li><a href="scene2.html">Pre Page</a></li>
+</ul>
+</nav><!-- /#nav-main -->
+
+<div id="container">
+<header id="header">
+<h3>How about your country?</h3>
+<p>Let's explore the ramen ratings and styles in your interested country.</p>
+</header>
+
+
+<main id="content">
+<section>
+    <label>Select a Country :</label>
+    <select id="SelectCountry" style="width: 200px;"></select>
+</section>
+<svg width="600" height="500"></svg>
+</main>
+</div><!-- #container-->
+
+
+<footer id="footer">
+<p class="copyright">&copy;2023 CS416 &bull; Final Project design by Jingjing Yao &bull; All Rights Reserved</p>
+</footer>
+
+<script>
+    d3.csv("data/ramen.csv").then(function (data) {
+        //Group data by ramen style and calculate the average rating
+        const g_review = d3.group(data, d => d.Style);
+        const avg_ratings = Array.from(g_review, ([Style, values]) => ({
+            Style,
+            avg_ratings:d3.mean(values, d => d.Stars),
+        }));
+
+        var svg = d3.select("svg"),
+            margin = 200,
+            width = svg.attr("width") - margin,
+            height = svg.attr("height") - margin
+
+
+        var xScale = d3.scaleBand().range([0, width]).padding(0.4),
+            yScale = d3.scaleLinear().range([height, 0]);
+
+        var g = svg.append("g")
+                    .attr("transform", "translate(" + 100 + "," + 100 + ")");
+
+
+        xScale.domain(avg_ratings.map((d) => d.Style));
+        yScale.domain([0, d3.max(avg_ratings, (d) => d.avg_ratings)]);
+
+        g.append("g")
+            .attr("transform", "translate(0," + height + ")")
+            .call(d3.axisBottom(xScale));
+
+        g.append("g")
+            .call(d3.axisLeft(yScale).tickFormat(function(d){
+                return d;
+            }).ticks(10));
+
+        g.append("text")
+            .attr('x', width/2)
+            .attr('y', -25)
+            .attr("text-anchor", "middle")
+            .style("font-size", "18px")
+            .text("Average Rating");
+
+        g.append("text")
+            .attr("transform", "translate(" + (width/2) + " ," + (height+40) + ")")
+            .style("text-anchor", "middle")
+            .text("Style");
+
+        g.append("text")
+            .attr("transform", "rotate(-90)")
+            .attr('x', -height/2)
+            .attr('y', -40)
+            .style("text-anchor", "middle")
+            .text("Averager Rating");
+
+        g.selectAll(".bar")
+        .data(avg_ratings)
+        .enter().append("rect")
+        .attr("class", "bar")
+        .attr("x", (d) => xScale(d.Style))
+        .attr("y", (d) => yScale(d.avg_ratings))
+        .attr("width", xScale.bandwidth())
+        .attr("height", (d) => height - yScale(d.avg_ratings))
+        
+        const countries = Array.from(new Set(data.map(d => d.Country))); // Get unique country names
+        const countrySelect = d3.select("#SelectCountry")
+
+        countrySelect.selectAll("option")
+            .data(countries)
+            .enter()
+            .append("option")
+            .attr("value", d => d)
+            .text(d => d);
+
+        // Initial update with the first country in the list
+        updateBar(countries[0]);
+
+        // Event listener for dropdown change
+        countrySelect.on("change", function() {
+            const selectedCountry = d3.select(this).property("value");
+            updateBar(selectedCountry);
+        });
+
+        function updateBar(selectedCountry) {
+            const filteredData = data.filter(d => d.Country === selectedCountry);
+
+            const review = d3.group(filteredData, d => d.Style);
+            const ratings = Array.from(review, ([Style, values]) => ({
+                Style,
+                avg_ratings:d3.mean(values, d => d.Stars),
+            }));
+            console.log(ratings)
+            const bars = g.selectAll(".bar")
+                .data(ratings, d => d.Stlye)
+
+            bars.enter()
+                .append("rect")
+                .merge(bars)
+                .attr("class", "bar")
+                .attr("x", (d) => xScale(d.Style))
+                .attr("y", (d) => yScale(d.avg_ratings))
+                .attr("width", xScale.bandwidth())
+                .attr("height", (d) => height - yScale(d.avg_ratings))
+        
+            bars.exit().remove()
+        }
+    });
+</script>
+</body>
+</html>

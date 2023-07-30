@@ -1,1 +1,145 @@
-<h1>Ramen ratings and style</h1> 
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Ramen Ratings and Styles</title>
+    <meta charset="UTF-8">
+
+    <!-- Remy Sharp Shim -->
+    <!--[if lt IE 9]>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv.js"></script>
+<![endif]-->
+
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,400i,700,700i&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Playfair+Display:400i,700&display=swap" rel="stylesheet">
+    <link href="css/style.css" rel="stylesheet">
+
+    <script src="https://d3js.org/d3.v5.min.js"></script>
+    <script src="https://d3js.org/d3-array.v2.min.js"></script>
+    <script src="https://rawgit.com/susielu/d3-annotation/master/d3-annotation.min.js"></script>
+    <style>
+        /* .bar {
+            fill: steelblue;
+        } */
+    </style>
+</head>
+
+<body>
+    <nav id="nav-main">
+        <ul>
+            <li>Ramen Ratings &amp; Styles</li>
+            <li><a href="scene2.html">Next Page</a></li>
+        </ul>
+    </nav><!-- /#nav-main -->
+
+    <div id="container">
+        <header id="header">
+            <h3>Ramen Average Rating by Style</h3>
+            <p>The following bar chart shows the average rating by different styles from around 45 different countries.
+                The x-axis of the bar chart represents different ramen styles, indicating the various categories or
+                types of ramen. Each bar corresponds to a specific ramen style, including bar, bowl, can, box, cup, pack
+                and tray.The y-axis displays the average rating of each ramen style.</p>
+        </header>
+
+        <main>
+            <svg width="1000" height="500"></svg>
+        </main>
+    </div><!-- #container-->
+
+    <footer id="footer">
+        <p class="copyright">&copy;2023 CS416 &bull; Final Project design by Jingjing Yao &bull; All Rights Reserved</p>
+    </footer>
+
+    <script>
+
+        d3.csv("data/ramen.csv").then(function (data) {
+
+            //Group data by ramen style and calculate the average rating
+            const g_review = d3.group(data, d => d.Style);
+            const avg_ratings = Array.from(g_review, ([Style, values]) => ({
+                Style,
+                avg_ratings: d3.mean(values, d => d.Stars),
+            }));
+            // var color = d3.scale.ordinal().range(['#F24C3D', '#F29727', '#F2BE22', '#22A699', '#FF78C4', '#9AC5F4', '#30A2FF'])
+
+            var svg = d3.select("svg"),
+                width = svg.attr("width") - 600,
+                height = svg.attr("height") - 200
+
+
+            var xScale = d3.scaleBand().range([0, width]).padding(0.4),
+                yScale = d3.scaleLinear().range([height, 0]);
+
+            var g = svg.append("g")
+                .attr("transform", "translate(" + 100 + "," + 100 + ")");
+
+
+            xScale.domain(avg_ratings.map((d) => d.Style));
+            yScale.domain([0, d3.max(avg_ratings, (d) => d.avg_ratings)]);
+
+            g.append("g")
+                .attr("transform", "translate(0," + height + ")")
+                .call(d3.axisBottom(xScale));
+
+            g.append("g")
+                .call(d3.axisLeft(yScale).tickFormat(function (d) {
+                    return d;
+                }).ticks(10));
+
+            g.append("text")
+                .attr('x', width / 2)
+                .attr("text-anchor", "middle")
+                .style("font-size", "18px")
+                .text("Average Rating");
+
+            g.append("text")
+                .attr("transform", "translate(" + (width / 2) + " ," + (height + 40) + ")")
+                .style("text-anchor", "middle")
+                .text("Style");
+
+            g.append("text")
+                .attr("transform", "rotate(-90)")
+                .attr('x', -height / 2)
+                .attr('y', -40)
+                .style("text-anchor", "middle")
+                .text("Averager Rating");
+            
+            var colors = d3.scaleOrdinal(['#F24C3D', '#F29727', '#F2BE22', '#22A699', '#FF78C4', '#9AC5F4', '#30A2FF']);
+            g.selectAll(".bar")
+                .data(avg_ratings)
+                .enter().append("rect")
+                .attr("class", "bar")
+                .attr("x", (d) => xScale(d.Style))
+                .attr("y", (d) => yScale(d.avg_ratings))
+                .attr("width", xScale.bandwidth())
+                .attr("height", (d) => height - yScale(d.avg_ratings))
+                .attr("fill", function(d, i) {
+                    return colors(i);
+                })
+
+
+            // Features of the annotation
+            const annotations = [
+                {
+                    note: {
+                        label: "Here is the annotation label ssssssssssssssssAnnotation titlsssssssseAnnotation titlsssssssse",
+                        title: "Annotation titlsssssssseAnnotation titlsssssssseAnnotation titlsssssssse"
+                    },
+                    x: 385,
+                    y: 200,
+                    dx: 50,
+                    dy: -50
+                }
+            ]
+
+            // Add annotation to the chart
+            const makeAnnotations = d3.annotation()
+                .annotations(annotations)
+            g.append("g")
+                .call(makeAnnotations)
+        });
+
+    </script>
+</body>
+
+</html>

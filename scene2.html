@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<title>Ramen Ratings and Styles</title>
+<meta charset="UTF-8">
+
+<!-- Remy Sharp Shim --> 
+<!--[if lt IE 9]>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv.js"></script>
+<![endif]-->
+
+<link href="https://fonts.googleapis.com/css?family=Open+Sans:400,400i,700,700i&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css?family=Playfair+Display:400i,700&display=swap" rel="stylesheet">
+<link href="css/style.css" rel="stylesheet">
+
+<script src="https://d3js.org/d3.v5.min.js"></script> 
+<!-- Color scale -->
+<script src="https://d3js.org/d3-scale-chromatic.v1.min.js"></script>
+</head>
+
+<body>
+<nav id="nav-main">
+<ul>
+<li>Ramen Ratings &amp; Styles</li>
+<li><a href="index.html">Pre Page</a></li>
+<li><a href="scene3.html">Next Page</a></li>
+</ul>
+</nav><!-- /#nav-main -->
+
+<div id="container">
+<header id="header">
+<h3>Ramen Style Distribution</h3>
+<p>The following pie chart shows ramen style distribution from all the reviews in the dataset.</p>
+</header>
+
+
+<main>
+
+    <svg width="600" height="600"></svg>
+
+</main>
+</div><!-- #container-->
+
+
+<footer id="footer">
+<p class="copyright">&copy;2023 CS416 &bull; Final Project design by Jingjing Yao &bull; All Rights Reserved</p>
+</footer>
+
+<script>
+    d3.csv("data/ramen.csv").then(function (data) {
+        //Prepare the data
+        var totalReviews = data.length;
+        var data = d3.nest()
+             .key(d => d.Style)
+             .rollup(v => v.length)
+             .entries(data);
+
+
+        //Calculate each style percentage
+        data.forEach(d => d.percentage = (d.value / totalReviews) * 100);
+
+        var svg = d3.select("svg"),
+        width = svg.attr("width"),
+        height = svg.attr("height"),
+        radius = Math.min(width, height) / 2.5,
+        g = svg.append("g").attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
+
+        const colors = d3.scaleOrdinal(['#F24C3D', '#F29727', '#F2BE22', '#22A699', '#FF78C4', '#9AC5F4', '#30A2FF']);
+        // Generate the pie
+        var pie = d3.pie()
+            .value(d => d.percentage);
+
+        // Generate the arcs
+        var arc = d3.arc()
+                .innerRadius(0)
+                .outerRadius(radius*0.8);
+
+        //Generate groups
+        var arcs = g.selectAll("arc")
+                .data(pie(data))
+                .enter()
+                // .append("g")
+                // .attr("class", "arc")
+
+        //Draw arc paths
+        arcs.append("path")
+            .attr("fill", function(d, i) {
+            return colors(i);
+            })
+            .attr("d", arc)
+            // .attr("stroke", "black")
+
+        g.append("text")
+            .attr('y', -240)
+            .attr("text-anchor", "middle")
+            .style("font-size", "16px")
+            .text("Style Distribution");
+    
+
+            // Legend
+            const legend = svg.append("g")
+                .attr("transform", "translate(0," + (height / 2 + 20) + ")"); // Position the legend below the pie chart
+
+            const legendItems = legend.selectAll("legendItem")
+                .data(data)
+                .enter()
+                .append("g")
+                .attr("transform", (d, i) => "translate(0," + (i * 20) + ")"); // Set vertical spacing between legend items
+
+            legendItems.append("rect")
+                .attr("width", 15)
+                .attr("height", 15)
+                .attr("fill", (d, i) => colors(i));
+
+            legendItems.append("text")
+                .attr("x", 20)
+                .attr("y", 12)
+                .text(d => d.key + " (" + d.percentage.toFixed(2) + "%)")
+                .style("font-size", "12px");
+    });
+
+
+
+</script>
+
+</body>
+</html>

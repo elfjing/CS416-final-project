@@ -1,0 +1,179 @@
+/* This is the stylesheet for the Vienna Cafe site. */
+
+/* COLOR CODES */
+/*
+#50200B;	/* rich brown  */
+/*
+#F6C883;	/* cream */
+/*
+#903A13;	/* rust */
+
+
+
+/* FOR DEVO ONLY -- DELETE BEFORE SITE GOES LIVE */
+
+/*v, header, footer, nav, main, section, aside{
+    border: 1px solid red;
+}
+
+/* END DEVO ONLY STYLES */
+
+/* BROWSER RESETS */
+body, body * {
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+} 
+
+a img{ /* linked images only */
+	border: 0; 
+}
+
+/* END BROWSER RESETS */
+
+
+/* GLOBAL FONT STYLES */
+html{
+	font-size: 16px;      
+}
+
+body{
+	
+	font-family: "Open Sans", Helvetica, Arial, sans-serif;
+	font-size: 100%;    
+	line-height: 1.6;  
+	color: #50200B;                    /* rich brown  */
+	background-color: #F9E0BB;
+	background-size: cover;
+	background-attachment: fixed;
+}
+
+/* TEXT ELEMENTS */
+h1, h2, h3, h4 {
+	font-family: "Playfair Display", Georgia, "Times New Roman", sans-serif;
+}
+
+h2, h3, h4 {
+	color: #903A13;                     /* rust */
+}
+
+h1{
+	font-size: 5em;
+	line-height: 1.2;
+}
+
+h2{
+	font-size: 2.25em;
+}
+
+h3{
+	font-size: 1.5em;
+}
+
+p, ul {
+	margin-bottom: 1em;
+}
+
+li {
+	margin-bottom: .4em;
+}
+
+li {
+	margin-left: 2.25em; /* adjust as needed, use ems so the indent scales with the font */
+}
+
+
+img{
+	border-radius: 25px;
+}
+/* LINK */
+
+/* global link styles first */
+
+a:link,
+a:visited{
+		text-decoration: underline;
+		color:#903A13;	/* rust */
+}
+
+a:hover,
+a:focus{
+	text-decoration: none;
+}
+
+h1 a:link,
+h1 a:visited{
+	color: #50200B;	/* rich brown  */
+	text-decoration: none;
+}
+
+h1 a:hover,
+h1 a:focus{
+	color:#903A13;	/* rust */
+}
+
+
+/* NAVIGATION */
+
+/* UNIVERSAL NAV LIST RESET */
+
+nav li {
+	list-style: none;	
+	margin: 0;	
+}
+
+/* NAV STYLES */
+#nav-main {
+	background-color:#903A13;	/* rust */
+	padding: 1.5em 10%;	/* TB RL */	
+	overflow: hidden;
+}
+
+#nav-main li {
+	float: left;
+	margin-right: 2.7em;
+}
+
+#nav-main li.last {
+	margin-right: 0;
+}
+  
+
+#nav-main a:link,
+#nav-main a:visited {
+	color: #F6C883;	/* cream */
+	text-decoration: none;
+}
+
+
+#nav-main a:hover,
+#nav-main a:focus{
+	text-decoration: underline;
+}
+
+
+/* LAYOUT STYLES */
+
+#container{
+	padding: 1.25em;
+	margin-left: 10%;
+}
+
+main{
+    overflow:hidden;
+    padding-top: 50px;
+    padding-bottom: 100px;
+} 
+
+
+#footer {
+	background-color:  #903A13;	/* rust */	
+	color: #F6C883;	/* cream */
+    position:fixed;
+    margin-top: -180px;
+    bottom: 0;
+    width: 100%;
+	padding: 1.5em 10%;	/* TB RL */	
+    overflow: hidden;
+
+}
