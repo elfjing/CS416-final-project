@@ -16,12 +16,13 @@
 <script src="https://d3js.org/d3.v5.min.js"></script> 
 <!-- Color scale -->
 <script src="https://d3js.org/d3-scale-chromatic.v1.min.js"></script>
+<script src="https://rawgit.com/susielu/d3-annotation/master/d3-annotation.min.js"></script>
 </head>
 
 <body>
 <nav id="nav-main">
 <ul>
-<li>Ramen Ratings &amp; Styles</li>
+<li style="color:#F6F4EB;">Ramen Ratings &amp; Styles</li>
 <li><a href="index.html">Pre Page</a></li>
 <li><a href="scene3.html">Next Page</a></li>
 </ul>
@@ -117,6 +118,29 @@
                 .attr("y", 12)
                 .text(d => d.key + " (" + d.percentage.toFixed(2) + "%)")
                 .style("font-size", "12px");
+
+
+            
+            // Features of the annotation
+            const annotations = [
+                {
+                    note: {
+                        label: "Pack is the most dominant style worldwide, which comprises more than half of all reviews.",
+               
+                    },
+                    x: 150,
+                    y: 100,
+                    dx:50,
+                    dy: -50
+                }
+            ]
+
+
+            // Add annotation to the chart
+            const makeAnnotations = d3.annotation()
+                .annotations(annotations)
+            g.append("g")
+                .call(makeAnnotations)
     });
 
 

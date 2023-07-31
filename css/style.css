@@ -49,6 +49,7 @@ body{
 }
 
 /* TEXT ELEMENTS */
+
 h1, h2, h3, h4 {
 	font-family: "Playfair Display", Georgia, "Times New Roman", sans-serif;
 }
@@ -78,9 +79,6 @@ li {
 	margin-bottom: .4em;
 }
 
-li {
-	margin-left: 2.25em; /* adjust as needed, use ems so the indent scales with the font */
-}
 
 
 img{
@@ -132,7 +130,9 @@ nav li {
 #nav-main li {
 	float: left;
 	margin-right: 2.7em;
+    text-decoration: underline;
 }
+
 
 #nav-main li.last {
 	margin-right: 0;
@@ -142,7 +142,7 @@ nav li {
 #nav-main a:link,
 #nav-main a:visited {
 	color: #F6C883;	/* cream */
-	text-decoration: none;
+	text-decoration: underline;
 }
 
 

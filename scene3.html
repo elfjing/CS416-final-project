@@ -16,16 +16,16 @@
 <script src="https://d3js.org/d3.v5.min.js"></script> 
 <script src="https://d3js.org/d3-array.v2.min.js"></script>
 <style>
-    .bar {
+    /* .bar {
         fill: steelblue;
-    }
+    } */
 </style>
 </head>
 
 <body class="home">
 <nav id="nav-main">
 <ul>
-<li>Ramen Ratings &amp; Styles</li>
+<li style="color:#F6F4EB;">Ramen Ratings &amp; Styles</li>
 <li><a href="scene2.html">Pre Page</a></li>
 </ul>
 </nav><!-- /#nav-main -->
@@ -104,6 +104,9 @@
             .style("text-anchor", "middle")
             .text("Averager Rating");
 
+        const colors = d3.scaleOrdinal(['#F24C3D', '#F29727', '#F2BE22', '#22A699', '#FF78C4', '#9AC5F4', '#30A2FF'])
+        const styles = ["Cup", "Pack", "Tray", "Bowl", "Box", "Can", "Bar"]
+
         g.selectAll(".bar")
         .data(avg_ratings)
         .enter().append("rect")
@@ -112,7 +115,11 @@
         .attr("y", (d) => yScale(d.avg_ratings))
         .attr("width", xScale.bandwidth())
         .attr("height", (d) => height - yScale(d.avg_ratings))
-        
+        .attr("fill", function(d) {
+            console.log(d.Style)
+            return colors(styles.indexOf(d.Style));
+        })
+
         const countries = Array.from(new Set(data.map(d => d.Country))); // Get unique country names
         const countrySelect = d3.select("#SelectCountry")
 
@@ -152,7 +159,11 @@
                 .attr("y", (d) => yScale(d.avg_ratings))
                 .attr("width", xScale.bandwidth())
                 .attr("height", (d) => height - yScale(d.avg_ratings))
-        
+                .attr("fill", function(d) {
+                    console.log(d.Style)
+                    return colors(styles.indexOf(d.Style));
+                })
+
             bars.exit().remove()
         }
     });
